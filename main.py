@@ -22,4 +22,4 @@ if __name__ == "__main__":
     numIters = 50
     eta = 0.01
     weights, trainErrors, testError = TestModel(numIters, eta)
-    drawAndSave(trainErrors, "{}-{}.png".format(numIters, eta))
+    drawAndSave(trainErrors, "{}-{}-{}.png".format(numIters, eta, testError))
