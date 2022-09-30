@@ -6,15 +6,20 @@ import math
 import sys
 from util import *
 from model import *
+from draw import *
 
 def TestModel(numIters, eta):
     trainExamples = readExamples('data/data_rt.train')
     testExamples = readExamples('data/data_rt.test')
     featureExtractor = extractFeatures
-    weights = learnPredictor(trainExamples, testExamples, featureExtractor, numIters=numIters, eta=eta)
-    trainError = evaluatePredictor(trainExamples, lambda x : (1 if dotProduct(featureExtractor(x), weights) >= 0 else -1))
+    weights, trainErrors = learnPredictor(trainExamples, testExamples, featureExtractor, numIters=numIters, eta=eta)
+    #trainError = evaluatePredictor(trainExamples, lambda x : (1 if dotProduct(featureExtractor(x), weights) >= 0 else -1))
     testError = evaluatePredictor(testExamples, lambda x : (1 if dotProduct(featureExtractor(x), weights) >= 0 else -1))
-    print ("train error = %s, test error = %s" % (trainError, testError))
+    print ("train error = %s, test error = %s" % (trainErrors[len(trainErrors) - 1], testError))
+    return weights, trainErrors, testError
 
 if __name__ == "__main__":
-    TestModel(20, 0.01)
+    numIters = 50
+    eta = 0.01
+    weights, trainErrors, testError = TestModel(numIters, eta)
+    drawAndSave(trainErrors, "{}-{}.png".format(numIters, eta))

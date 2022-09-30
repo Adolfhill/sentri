@@ -48,7 +48,7 @@ def get_grad(sentense : str, weights : dict) -> float:
     return dotProduct(vec,weights)
 
 def get_new_weights(emotion, sentense : str, weights, eta) -> dict:
-    if get_grad(sentense, weights) >= 1:
+    if get_grad(sentense, weights) * emotion >= 1:
         return weights
     vec = extractFeatures(sentense)
     return increment(weights, emotion * eta, vec)
@@ -60,6 +60,7 @@ def learnPredictor(trainExamples, testExamples, featureExtractor, numIters, eta)
     你需要实现随机梯度下降优化权重
     '''
     weights = init_weights(trainExamples, testExamples)
+    trainErrors = []
     for i in range(0, numIters):
         # BEGIN_YOUR_CODE
         for tup in trainExamples:
@@ -68,9 +69,10 @@ def learnPredictor(trainExamples, testExamples, featureExtractor, numIters, eta)
             weights = get_new_weights(emotion,sentense,weights,eta)            
         # END_YOUR_CODE
         trainError = evaluatePredictor(trainExamples, lambda x : (1 if dotProduct(featureExtractor(x), weights) >= 0 else -1))
-        testError= evaluatePredictor(testExamples, lambda x : (1 if dotProduct(featureExtractor(x), weights) >= 0 else -1))
-        print("At iteration %d, error rate on training set is  %f, error rate on test set is %f " % \
-            (i, trainError, testError)) 
-    return weights
+        #testError= evaluatePredictor(testExamples, lambda x : (1 if dotProduct(featureExtractor(x), weights) >= 0 else -1))
+        #print("At iteration %d, error rate on training set is  %f, error rate on test set is %f " % \
+            #(i, trainError, testError)) 
+        trainErrors.append(trainError)
+    return weights, trainErrors
 
 
