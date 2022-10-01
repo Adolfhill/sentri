@@ -7,6 +7,7 @@ import sys
 from util import *
 from model import *
 from draw import *
+from log import *
 
 def TestModel(numIters, eta):
     trainExamples = readExamples('data/data_rt.train')
@@ -19,7 +20,14 @@ def TestModel(numIters, eta):
     return weights, trainErrors, testError
 
 if __name__ == "__main__":
+    logger = getLogger("res/res.INFO")
     numIters = 50
-    eta = 0.01
-    weights, trainErrors, testError = TestModel(numIters, eta)
-    drawAndSave(trainErrors, "{}-{}-{}.png".format(numIters, eta, testError))
+    eta = 0.0
+    deltaEta = 0.05
+    logger.info("numIters : {}".format(numIters))
+    logger.info("(eta , testError),")
+    for i in range(20):
+        eta = eta + deltaEta
+        weights, trainErrors, testError = TestModel(numIters, eta)
+        drawAndSave(trainErrors, "./pngs/{}-{}-{}.png".format(numIters, eta, testError))
+        logger.info("({} , {})".format(eta, testError))
